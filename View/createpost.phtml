@@ -1,0 +1,22 @@
+<h3>Insérer un nouveau post</h3>
+
+<form role="form" action="" method="POST" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="inputTitle">Title</label>
+			<input name="title" type="text" class="form-control" id="inputTitle" value="">
+		</div>
+		<div class="form-group">
+			<label for="inputTags">Tags</label>
+			<input name="tags" type="text" class="form-control" id="inputTags" value="">
+		</div>
+		<div class="form-group">
+			<label for="inputFile">Picture</label>
+			<input name="files[]" multiple type="file" id="inputFile">
+		</div>
+		<div class="form-group">
+			<label for="inputContent">Post content</label>
+			<textarea name="description" class="form-control" rows="20" id="inputContent"></textarea>
+		</div>
+		<input type="hidden" name="valider" id="valider">
+		<button type="submit" class="btn btn-default">Submit</button>
+	</form>

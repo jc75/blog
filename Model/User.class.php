@@ -12,42 +12,66 @@ Class Model_User
 
 	public function verifLogin($login, $password)
 	{
-		// récupérer l'utilisateur ayant pour login "$login" -> le stocker dans une variable $user
-		// si le mot de passe en db correspond au mot de passe entré dans le formulaire
-		// -> return $user
-		// sinon
-		// -> return false
-		$user = $this->db->fetchOne($login, $password);
-		if ($user)
-		{
-			return $user;
-		}
-		else
-		{
-			return false;
-		}
 
+		$user = $this->db->fetchOne("SELECT * FROM users WHERE pseudo = :username", array("username" => $_POST["username"]));
 
-
+			if (password_verify($password, $user["password"]))
+			{
+				$_SESSION["id"] = $user["id"];
+				$_SESSION["admin"] = $user["is_admin"];
+				$_SESSION["username"] = $user["pseudo"];
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		
 	}
 
 	public function logout()
 	{
-
+		session_destroy();
 	}
 
-	public function createUser($query, $data)
-	{
+	public function createUser($data)
+	{	
+		$user = $this->db->insert("INSERT INTO users(pseudo, password) VALUES(:username, :password)",$data);
 		
-		$this->db->insert($query,$data);
+		$_SESSION["id"] = $this->db->lastInsertId();
+		$_SESSION["admin"] = 0;
+		$_SESSION["username"] = $POST["pseudo"];
+		//$query->execute($data);
+		return true;
 		
-
 	}
 
-	public function isLogin()
+	public function isLogged()
 	{
 
+		if (array_key_exists("username",$_SESSION))
+		{
+			return "<p>Bienvenu ".$_SESSION["username"].", <a href='logout.php'>Logout</a></p><p><a href='createpost.php'>Create Post</a></p>";
 
+		}else{
+
+			return "Bonjour, <a href='login.php'>Login</a>";
+		}
+	
+	}
+
+	public function isAdmin()
+	{
+
+		if (array_key_exists("is_admin",$_SESSION) && $_SESSION["is_admin"]==1)
+		{
+			return true;
+
+		}else{
+
+			return false;
+		}
+	
 	}
 
 }

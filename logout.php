@@ -1,9 +1,9 @@
 <?php
-// Initialisation de la session
 session_start();
+require_once("Helper/Database.class.php");
+require_once("Model/User.class.php");
 
-// On détruit et supprime la session en cours
-session_destroy();
+$userManager = new Model_User();
+$userManager->logout();
 
-// Redirection vers l'index
 header("Location: index.php");
