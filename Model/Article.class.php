@@ -12,16 +12,16 @@ Class Model_Article
 
 	public function getAll()
 	{
-		$article = $this->db->fetchAll("SELECT * FROM articles a JOIN users u on a.user_id = u.id");
+		$article = $this->db->fetchAll("SELECT u.id as users_id, a.id as article_id, pseudo, title, date, description, user_id FROM articles a JOIN users u on a.user_id = u.id");
 
 		return $article;
 		//var_dump($article);
 
 	}
 
-	public function getOne()
+	public function getOne($id)
 	{
-		$article = $this->db->fetchOne("SELECT * FROM articles a JOIN users u on a.user_id = u.id WHERE id = :idArticle", array("idArticle" => $_GET["id_article"]));
+		$article = $this->db->fetchOne("SELECT u.id as users_id, a.id as article_id, pseudo, title, date, description, user_id FROM articles a JOIN users u on a.user_id = u.id WHERE a.id = :idArticle", array("idArticle" => $_GET["id"]));
 		
 		return $article;
 	}
@@ -34,9 +34,10 @@ Class Model_Article
 		
 	}
 
+
 	public function insertImage($file, $article_id)
 	{
-		$uploads_dir = 'assets/images';
+		$uploads_dir = 'assets/files';
 
 		foreach ($file["files"]["error"] as $key => $error) {
 		    if ($error == UPLOAD_ERR_OK) {
@@ -49,6 +50,86 @@ Class Model_Article
 
 		}
 	}
+
+
+	public function pageNext($article_id)
+	{
+		$page_next = $this->db->fetchAll("SELECT * FROM articles where id > :article_id order by id ASC",array("article_id"=>$article_id));
+		
+		if(isset($page_next[0]))
+		{
+			$data = $page_next[0];
+			return $data;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
+	public function pagePrev($article_id)
+	{
+		$page_prev = $this->db->fetchAll("SELECT * FROM articles where id < :article_id order by id DESC",array("article_id"=>$article_id));
+	
+		if(isset($page_prev[0]))
+		{
+			$data = $page_prev[0];
+			return $data;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public function pagination($offset,$nbPost)
+	{
+		
+		$offset = ($offset-1)*$nbPost;
+
+		$post = $this->db->fetchOne("SELECT count(*) FROM articles");
+
+		foreach ($post as $value) {
+			$total = $value;
+		}
+
+		$nombreDePages=ceil($total/$nbPost);
+
+		$data[] = $nombreDePages;
+
+		 $article = $this->db->fetchAll("SELECT u.id as users_id, a.id as article_id, pseudo, title, date, description, user_id FROM articles a JOIN users u on a.user_id = u.id order by article_id limit $offset, $nbPost");
+		 
+		$data[] = $article;
+
+		return $data;
+
+	}
+
+	public function showComment($article_id)
+	{	
+
+		$comment = $this->db->fetchAll("SELECT * FROM comments c JOIN users u on c.id_user = u.id where id_article= :article_id",array("article_id"=>$article_id));		
+
+		foreach ($comment as $c) {
+
+			$data[] = $c;
+		}
+		if (isset($data)){
+
+			return $data;
+
+		}else{
+			return false;
+		}
+	}
+
+	public function insertComment($data)
+	{
+		$comment = $this->db->insert("INSERT INTO comments(content, id_article, id_user) VALUES(:content, :id_article, :id_user)",$data);
+		
+	}
+
 
 	public function insertTag($tags, $article_id)
 	{
@@ -68,10 +149,13 @@ Class Model_Article
 		return $tag;
 	}
 
-	public function showTPicture($article_id)
+	public function showImg($article_id)
 	{
-
-
+		$img = $this->db->fetchAll("SELECT * FROM images where article_id = :article_id",array("article_id"=>$article_id));
+		return $img;
 	}
+
+
+
 
 }

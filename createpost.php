@@ -17,8 +17,7 @@ if (array_key_exists("valider", $_POST))
 	$articleManager -> insertTag($_POST["tags"], $last_id);
 		
 	//var_dump($_FILES);
-	header("Location: index.php");exit();
-	
+	header("Location: index.php");exit();	
 }
 
 include "View/header.phtml";

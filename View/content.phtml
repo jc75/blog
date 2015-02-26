@@ -3,51 +3,68 @@
             <!-- Blog Entries Column -->
             <div class="col-md-8">
 
-                <h1 class="page-header">
-                    Blog
-                </h1>
-
                 <!-- First Blog Post -->
 
-                <?php foreach($article->getAll() as $row):?>
-
+                <?php foreach($page[1] as $row):?>
+                <p style="text-align-left"></p>
                 <h2>
-                    <a href="#"><?=ucfirst($row["title"])?></a>
+                    <a href="post.php?id=<?=$row['article_id']?>"><?=ucfirst($row["title"])?></a>
+                    
                 </h2>
                 <p class="lead">
                     by <a href="index.php"><?=$row["pseudo"]?></a>
                 </p>
                 <p><span class="glyphicon glyphicon-time"></span> Posted on <?=$row["date"]?></p>
                 <p>
-                    <?php foreach($article->showTag($row["id"]) as $row2):?>
-                    <a href="tags.php?tag=">
+                    <?php 
+                    foreach($article->showTag($row["article_id"]) as $row2): 
+                    ?>
+
+                    <a href="tags.php?tag=<?=$row2['name']?>">
                         <span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-tag">
                         </span>&nbsp;<?=$row2["name"]?></span>
                     </a>
-                    <?php endforeach;?>
+
+                    <?php 
+                    endforeach;
+                    ?>
                     
-                    <?php var_dump($article->showTag($row["id"])); ?>
                 </p>
+                <?php if($userManager->isLogged()):?>
+                <p style="text-align:right">
+                    <span class="glyphicon glyphicon-edit"></span>
+                    <span class="glyphicon glyphicon glyphicon-trash"></span>
+                </p>
+                <?php endif;?>
                 <hr>
-                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                <?php foreach($article->showImg($row["article_id"]) as $row3): ?>
+
+                <img class="img-responsive" src='assets/files/<?=$row3["url"]?>' alt="">
+
+                <?php endforeach;?>
                 <hr>
                 <p><?=$row["description"]?></p>
-                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                <a class="btn btn-primary" href="post.php?id=<?=$row['article_id']?>">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
 
                 <hr>
 
                 <?php endforeach;?>
 
-
                 <!-- Pager -->
-                <ul class="pager">
-                    <li class="previous">
-                        <a href="#">&larr; Older</a>
-                    </li>
-                    <li class="next">
-                        <a href="#">Newer &rarr;</a>
-                    </li>
-                </ul>
+                <div class="row">
+                    <div class="col-lg-8 text-center">
+                    <div class="btn-group" role="group">
+                        
+                     <?php for ($i=1; $i < $page[0]+1; $i++):
+                        $classBtn = ($_GET["page"]==$i) ? "btn-primary" : "btn-default";?>
+
+                       <a class="btn <?=$classBtn?>" type="button" href="index.php?page=<?=$i?>"><?=$i?></a>
+
+                        <?php endfor;?>
+
+                    </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -57,7 +74,15 @@
                 <!-- Blog Search Well -->
                 <div class="well">                   
                     <div class="input-group">
-                    <?php echo $userManager->isLogged();?>
+                    <?php if($userManager->isLogged()):?>
+
+                    <p>Bienvenu <?=$_SESSION["username"]?>, <a href='logout.php'>Logout</a></p>
+                    <p><a href='createpost.php'>Create Post</a></p>
+                    <?php else:?>
+
+                    Bonjour, <a href='login.php'>Login</a>
+
+                    <?php endif;?>
                     </div>
                     <!-- /.input-group -->
                 </div>
@@ -70,3 +95,4 @@
                 </div>
 
             </div>
+</div>

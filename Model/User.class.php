@@ -51,11 +51,11 @@ Class Model_User
 
 		if (array_key_exists("username",$_SESSION))
 		{
-			return "<p>Bienvenu ".$_SESSION["username"].", <a href='logout.php'>Logout</a></p><p><a href='createpost.php'>Create Post</a></p>";
+			return true;
 
 		}else{
 
-			return "Bonjour, <a href='login.php'>Login</a>";
+			return false;
 		}
 	
 	}
@@ -63,7 +63,7 @@ Class Model_User
 	public function isAdmin()
 	{
 
-		if (array_key_exists("is_admin",$_SESSION) && $_SESSION["is_admin"]==1)
+		if ($_SESSION["admin"]==1)
 		{
 			return true;
 

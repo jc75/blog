@@ -1,0 +1,115 @@
+<div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+
+                <!-- First Blog Post -->
+
+                <h2>
+                    <a href="#"><?=ucfirst($article_post["title"])?></a>
+                </h2>
+                <p class="lead">
+                    by <a href="index.php"><?=$article_post["pseudo"]?></a>
+                </p>
+                <p><span class="glyphicon glyphicon-time"></span> Posted on <?=$article_post["date"]?></p>
+                <p>
+                    <?php foreach($article->showTag($article_post["article_id"]) as $row2): ?>
+
+                    <a href="tags.php?tag=<?=$row2['name']?>">
+                        <span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-tag">
+                        </span>&nbsp;<?=$row2["name"]?></span>
+                    </a>
+
+                    <?php endforeach;?>
+                    
+                </p>
+                <hr>
+                <?php foreach($article->showImg($article_post["article_id"]) as $row3): ?>
+
+                <img class="img-responsive" src='assets/files/<?=$row3["url"]?>' alt="">
+
+                <?php endforeach;?>
+                <hr>
+
+                <p><?=$article_post["description"]?></p>
+            
+                <hr>
+                <?php 
+                
+                if($article_comment != false):?>
+                <div class="row well">
+                    <?php foreach ($article_comment as $comment):
+                       // var_dump($comment[1]["content"]);
+                    ?>
+                    <blockquote>
+                        <p><?=$comment["content"]?></p>
+                        <footer>
+                        <span class="glyphicon glyphicon-user"></span>&nbsp;<?=$comment["pseudo"]?>
+                        <span class="glyphicon glyphicon-time"></span>&nbsp;<?=$comment["date"]?>
+                        </footer>
+                    </blockquote>
+                <?php endforeach;?>
+                </div>
+
+                <?php endif;?>
+
+                <?php if($userManager->isLogged()):?>
+                <div class="row well" id="comments">
+                <form role="form" action="comment.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="inputCommentContent">Add a comment</label>
+                    <textarea name="content" class="form-control" rows="3" id="inputCommentContent"></textarea>
+                </div>
+                <input type="hidden" name="id_article" value='<?=$article_post["article_id"]?>'>
+                <input type="hidden" name="valider" value="1">
+                <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+                <?php endif;?>
+
+                <!-- Pager -->
+                <ul class="pager">
+                    <?php if($pagePrev["id"]!=""):?>
+                    <li class="previous">
+                        <a href="post.php?id=<?=$pagePrev["id"]?>">&larr; Prev </a>
+                    </li>
+                    <?php endif;?>
+
+                    <?php if($pageNext["id"]!=""):?>
+                    <li class="next">
+                        <a href='post.php?id=<?=$pageNext["id"]?>'>Next &rarr;</a>
+
+                    </li>
+                <?php endif;?>
+                </ul>
+
+            </div>
+
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+
+
+                <!-- Blog Search Well -->
+                <div class="well">                   
+                    <div class="input-group">
+                    <?php if($userManager->isLogged()):?>
+
+                    <p>Bienvenu <?=$_SESSION["username"]?>, <a href='logout.php'>Logout</a></p>
+                    <p><a href='createpost.php'>Create Post</a></p>
+                    <?php else:?>
+
+                    Bonjour, <a href='login.php'>Login</a>
+
+                    <?php endif;?>
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+
+
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>Tags</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+
+            </div>
+</div>

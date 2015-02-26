@@ -8,20 +8,17 @@ require_once("Model/Article.class.php");
 $userManager = new Model_User();
 $article = new Model_Article();
 
-$nbPost = 2; //nombre de post par page
+$article_post = $article->getOne($_GET["id"]);
 
-if(!array_key_exists("page", $_GET) || ($_GET["page"]==1))
-	{
-		$_GET["page"] = 1;
-		$offset = 1;
-	}
-	else
-	{
-		$offset = $_GET["page"];
-	}
 
-$page = $article -> pagination($offset,$nbPost);
+$article_comment =	$article->showComment($_GET["id"]);
+
+//var_dump($article_comment);
+
+$pageNext = $article->pageNext($_GET["id"]);
+
+$pagePrev = $article->pagePrev($_GET["id"]);
 
 include "View/header.phtml";
-include "View/content.phtml";
+include "View/post.phtml";
 include "View/footer.phtml";
